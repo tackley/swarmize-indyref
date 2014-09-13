@@ -8,4 +8,7 @@ object Application extends Controller {
     Ok("indyref twitter feed running")
   }
 
+  def healthCheck() = Action {
+    Ok("So far, so good")
+  }
 }
