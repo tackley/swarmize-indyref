@@ -15,6 +15,7 @@ object TwitterScanner {
 
   val lastSucessfullyProcessed = new AtomicReference[DateTime](DateTime.now)
   val totalProcessed = new AtomicLong()
+  val tweetsSeen = new AtomicLong()
 
   val yesTags = Set("yes", "voteyes", "yesplease")
   val noTags = Set("no", "voteno", "nothanks", "labourno")
@@ -22,9 +23,10 @@ object TwitterScanner {
   object listener extends StatusListener {
     override def onStatus(status: Status): Unit = {
       if (!status.isRetweet) {
+        tweetsSeen.incrementAndGet()
+
         log.info(s"@${status.getUser.getScreenName}: ${status.getText}")
         log.info(s"HASHTAGS: ${status.getHashtagEntities.map(_.getText).mkString(", ")}")
-        log.info(s"GEO: ${status.getGeoLocation}")
 
         val hashTags = status.getHashtagEntities.toList.map(_.getText.toLowerCase).toSet
 
@@ -53,7 +55,12 @@ object TwitterScanner {
             .post(obj)
             .map { r =>
               log.info(r.status + " " + r.statusText)
-              log.info(r.body)
+              if (r.status != 200)
+                log.info(r.body)
+              else {
+                lastSucessfullyProcessed.set(DateTime.now)
+                totalProcessed.incrementAndGet()
+              }
             }
         }
       }
