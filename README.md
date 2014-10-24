@@ -10,6 +10,6 @@ It's a [play framework](https://www.playframework.com) application written in sc
 2. create a `conf/twitter4j.properties` file with your twitter api key details in it, as described [here](http://twitter4j.org/en/configuration.html)
 3. `$ sbt start` 
 
+The actual work is done in [app/lib/TwitterScanner.scala](app/lib/TwitterScanner.scala).
+
 Read more details about this case study on [swarmize.com](http://alpha.swarmize.com/case_studies/indyref).
-
-
